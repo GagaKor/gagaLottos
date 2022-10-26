@@ -1,22 +1,13 @@
-const xlsx = require("xlsx");
+import * as XLSX from "xlsx";
+import fs from "fs";
+import store from "@/store";
 
-const path = require("path");
-
-exports.makeLotto = async (playCount, include, exclude) => {
-  const workbook = xlsx.readFile(
-    path.resolve("/", "Users", "Public", "Documents")
-  );
+export const getThisWeekLotto = async () => {
+  const data = fs.readFileSync("C:/lotto/excel.xls");
+  const workbook = XLSX.read(data);
   const sheet = workbook.SheetNames;
   const list = workbook.Sheets[sheet[1]];
   const last = list["!ref"].slice(list["!ref"].indexOf("T") + 1);
-  const lastLotto = [
-    list.N3.v,
-    list.O3.v,
-    list.P3.v,
-    list.Q3.v,
-    list.R3.v,
-    list.S3.v,
-  ];
 
   const beforeLottos = [];
   for (let i = 3; i <= last; i++) {
@@ -30,6 +21,30 @@ exports.makeLotto = async (playCount, include, exclude) => {
     ];
     beforeLottos.push(numArr);
   }
+
+  const thisWeekLotto = [
+    list.N3.v,
+    list.O3.v,
+    list.P3.v,
+    list.Q3.v,
+    list.R3.v,
+    list.S3.v,
+  ];
+
+  store.commit("setLottos", beforeLottos);
+  store.commit("setLastLottos", thisWeekLotto);
+  return thisWeekLotto;
+};
+export const makeLotto = async (playCount, include, exclude) => {
+  // const data = fs.readFileSync("C:/lotto/excel.xls");
+  // const workbook = XLSX.read(data);
+  // const sheet = workbook.SheetNames;
+  // const list = workbook.Sheets[sheet[1]];
+  // const last = list["!ref"].slice(list["!ref"].indexOf("T") + 1);
+  //엑셀에서 당첨번호 컬럼별 데이터 분리
+  const lastLotto = store.getters.getLastLottos;
+
+  const beforeLottos = store.getters.getLottos;
 
   if (include && include.length > 5) throw new Error("Over 5 number");
 
@@ -82,6 +97,5 @@ exports.makeLotto = async (playCount, include, exclude) => {
       result.push(game);
     }
   }
-
   return result;
 };

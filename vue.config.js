@@ -12,10 +12,9 @@ module.exports = defineConfig({
         // options placed here will be merged with default configuration and passed to electron-builder
       },
       webPreferences: {
-        // Use pluginOptions.nodeIntegration, leave this alone
-        // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+        worldSafeExecuteJavaScript: true, // required for Electron 12+
+        contextIsolation: false, // required for Electron 12+
         nodeIntegration: true,
-        contextIsolation: false,
         enableRemoteModule: true,
       },
     },

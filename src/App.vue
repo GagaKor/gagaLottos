@@ -1,14 +1,10 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
   <router-view />
 </template>
 <script>
 import electron from "electron";
 import { download } from "./utils/excel";
-
+// import { getThisWeekLotto } from "./utils/lottos";
 const { app } = electron.remote;
 
 export default {
@@ -17,19 +13,21 @@ export default {
     appVersion: "",
     loading: {},
     downloadData: false,
+    lottos: [],
   }),
-  created() {
+  async created() {
     this.appVersion = app.getVersion();
-  },
-  async mounted() {
     this.showLoading("down");
     await this.downloadExcel();
   },
+  async mounted() {},
   methods: {
     async downloadExcel() {
       this.downloadData = await download();
       if (!this.downloadData) await this.downloadExcel();
       else this.hideLoading("down");
+
+      // await this.getLotto();
     },
     showLoading(key) {
       if (this.loading[key]) return;

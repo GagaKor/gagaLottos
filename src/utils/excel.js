@@ -1,8 +1,8 @@
-const puppeteer = require("puppeteer");
-const path = require("path");
-const fs = require("fs");
+import puppeteer from "puppeteer";
+import path from "path";
+import fs from "fs";
 
-exports.download = async () => {
+export const download = async () => {
   try {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
@@ -18,30 +18,29 @@ exports.download = async () => {
 
     await page._client.send("Page.setDownloadBehavior", {
       behavior: "allow",
-      downloadPath: path.resolve("/", "Users", "Public", "Documents"),
+      downloadPath: path.resolve("/", "lotto"),
     });
 
     const downBtn = "#exelBtn";
     await page.click(downBtn, { delay: 10 });
 
     let timeout = 1000;
-
-    const interval = setInterval(() => {
-      fs.readdir(
-        path.resolve("/", "Users", "Public", "Documents"),
-        (err, files) => {
-          if (files.includes("excel.xls") !== -1) {
+    try {
+      const interval = setInterval(() => {
+        fs.readdir("C://lotto", async (err, files) => {
+          console.log(files.includes("excel.xls"));
+          if (files.includes("excel.xls")) {
             clearInterval(interval);
           } else {
             timeout = 1000;
           }
-        }
-      );
-    }, 500);
-
-    await page.waitForTimeout(timeout);
-
-    await browser.close();
+        });
+      }, 500);
+      await page.waitForTimeout(timeout);
+      await browser.close();
+    } catch (err) {
+      console.log(err);
+    }
 
     return true;
   } catch (e) {
@@ -50,11 +49,9 @@ exports.download = async () => {
   }
 };
 
-exports.remove = () => {
+export const remove = () => {
   try {
-    fs.unlinkSync(
-      path.resolve("/", "Users", "Public", "Documents", "excel.xls")
-    );
+    fs.unlinkSync("C://lotto/excel.xls");
     return true;
   } catch (err) {
     return false;

@@ -2,14 +2,20 @@
   <form class="main-form">
     <section class="win-section">
       <div class="win-section-container">
-        <p class="win-title">금주의 당첨번호</p>
+        <p class="win-title">당첨번호</p>
         <div class="win-number-container">
-          <span class="win-number win-number--one">5</span>
-          <span class="win-number win-number--two">49</span>
-          <span class="win-number win-number--three">17</span>
-          <span class="win-number win-number--four">9</span>
-          <span class="win-number win-number--five">33</span>
-          <span class="win-number win-number--six">35</span>
+          <span class="win-number win-number--one">{{ thisWeekLotto[0] }}</span>
+          <span class="win-number win-number--two">{{ thisWeekLotto[1] }}</span>
+          <span class="win-number win-number--three">{{
+            thisWeekLotto[2]
+          }}</span>
+          <span class="win-number win-number--four">{{
+            thisWeekLotto[3]
+          }}</span>
+          <span class="win-number win-number--five">{{
+            thisWeekLotto[4]
+          }}</span>
+          <span class="win-number win-number--six">{{ thisWeekLotto[5] }}</span>
         </div>
       </div>
     </section>
@@ -18,43 +24,120 @@
       <div class="input-container input-container--gameTimes">
         <div class="input-box">
           <label>게임 횟수</label>
-          <input type="number" />
-        </div>
-        <div class="reserved-box">
-          <span class="reserved-value reserved-value--game-times"></span>
+          <input
+            type="number"
+            :value="playGames"
+            @change="playGamesChange($event)"
+            min="1"
+          />
         </div>
       </div>
       <div class="input-container">
         <div class="input-box">
           <label>포함 번호</label>
-          <input type="number" />
+          <input
+            type="text"
+            :value="include"
+            @keyup.enter="includeFn($event)"
+          />
         </div>
-        <div class="reserved-box"></div>
+        <div class="reserved-box">
+          <div
+            v-for="num in includeArray"
+            v-bind:key="num"
+            class="reserved-value"
+          >
+            {{ num }}
+          </div>
+        </div>
       </div>
       <div class="input-container">
         <div class="input-box">
           <label>제외 번호</label>
-          <input type="number" />
+          <input
+            type="text"
+            :value="exclude"
+            @keyup.enter="excludeFn($event)"
+          />
         </div>
-        <div class="reserved-box"></div>
+        <div class="reserved-box">
+          <div
+            v-for="num in excludeArray"
+            v-bind:key="num"
+            class="reserved-value"
+          >
+            {{ num }}
+          </div>
+        </div>
       </div>
     </section>
-    <div class="submit-container">
-      <input class="submit-input" type="submit" value="보내기" />
-    </div>
   </form>
+  <div class="submit-container">
+    <input
+      class="submit-input"
+      type="submit"
+      @click="getLottos"
+      value="보내기"
+    />
+  </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import { getThisWeekLotto, makeLotto } from "@/utils/lottos";
+import store from "@/store";
 
 export default {
   data: () => ({
-    lastLotto: [],
+    thisWeekLotto: [],
+    playGames: 1,
+    includeArray: [],
+    excludeArray: [],
+    include: null,
+    exclude: null,
   }),
-  created() {},
-  mounted() {},
-  method: {},
+  async created() {},
+  async mounted() {
+    this.thisWeekLotto = await getThisWeekLotto();
+  },
+  methods: {
+    playGamesChange(event) {
+      if (event.target.value < 1) return;
+      this.playGames = Number(event.target.value);
+    },
+    includeFn(event) {
+      this.include = event.target.value;
+      if (
+        this.include > 0 &&
+        this.include < 46 &&
+        !this.includeArray.includes(Number(this.include))
+      )
+        this.includeArray.push(Number(this.include));
+      this.includeArray.sort((a, b) => a - b);
+      this.include = "";
+    },
+    excludeFn(event) {
+      this.exclude = event.target.value;
+      if (
+        this.exclude > 0 &&
+        this.exclude < 46 &&
+        !this.excludeArray.includes(Number(this.exclude))
+      )
+        this.excludeArray.push(Number(this.exclude));
+      this.excludeArray.sort((a, b) => a - b);
+      this.exclude = "";
+    },
+    async getLottos() {
+      const result = await makeLotto(
+        this.playGames,
+        this.includeArray,
+        this.excludeArray
+      );
+      store.commit("setResult", result);
+
+      this.$router.push("/result");
+    },
+  },
 };
 </script>
 <style scoped>
@@ -79,6 +162,7 @@ main {
   height: 100%;
   display: flex;
   flex-direction: column;
+  margin-bottom: 30px;
 }
 .win-section {
   display: flex;
@@ -137,6 +221,9 @@ input {
   border: none;
   border-radius: 0.3em;
   padding: 0.3em;
+}
+.reserved-box {
+  height: 25px;
 }
 .reserved-value {
   font-weight: bold;
