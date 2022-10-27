@@ -2,23 +2,31 @@
   <form class="main-form">
     <section class="win-section">
       <div class="win-section-container">
-        <p class="win-title">당첨번호</p>
+        <p class="win-title">추천번호</p>
         <div
           class="win-number-container"
-          v-for="arr in result"
+          v-for="(arr, idx) in result"
           v-bind:key="arr"
         >
-          <span class="win-number win-number--one">{{ arr[0][0] }}</span>
-          <span class="win-number win-number--two">{{ arr[0][1] }}</span>
-          <span class="win-number win-number--three">{{ arr[0][2] }}</span>
-          <span class="win-number win-number--four">{{ arr[0][3] }}</span>
-          <span class="win-number win-number--five">{{ arr[0][4] }}</span>
-          <span class="win-number win-number--six">{{ arr[0][5] }}</span>
+          <span class="number-span">{{ idx + 1 }} &#10146;</span>
+          <span class="win-number win-number--one">{{ arr[0] }}</span>
+          <span class="win-number win-number--two">{{ arr[1] }}</span>
+          <span class="win-number win-number--three">{{ arr[2] }}</span>
+          <span class="win-number win-number--four">{{ arr[3] }}</span>
+          <span class="win-number win-number--five">{{ arr[4] }}</span>
+          <span class="win-number win-number--six">{{ arr[5] }}</span>
         </div>
       </div>
     </section>
   </form>
-  <button @click="goBack()">처음으로</button>
+  <div class="submit-container">
+    <input
+      class="submit-input"
+      type="submit"
+      value="처음으로"
+      @click="goBack()"
+    />
+  </div>
 </template>
 
 <script>
@@ -28,13 +36,16 @@ export default {
     result: [],
   }),
   created() {
-    this.result = store.getters.getResult;
+    this.result = this.paserProxy(store.getters.getResult);
   },
   mounted() {},
 
   methods: {
     goBack() {
       this.$router.push("/");
+    },
+    paserProxy(proxy) {
+      return JSON.parse(JSON.stringify(proxy));
     },
   },
 };
@@ -96,6 +107,20 @@ main {
   align-items: center;
   font-weight: bold;
   font-size: 1.2em;
+  height: 48px;
+  margin-bottom: 15px;
+}
+.number-span {
+  display: flex;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 0.4em;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.2em;
+  height: 48px;
+  margin-bottom: 15px;
 }
 .form-section {
   display: flex;
@@ -139,5 +164,12 @@ input {
 .submit-input {
   padding: 0.4em 1.6em;
   font-size: 1.1em;
+  cursor: pointer;
+}
+.submit-container {
+  position: absolute;
+  bottom: 5%;
+  width: 100%;
+  left: 0;
 }
 </style>

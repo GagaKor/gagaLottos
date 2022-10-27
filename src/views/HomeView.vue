@@ -2,7 +2,7 @@
   <form class="main-form">
     <section class="win-section">
       <div class="win-section-container">
-        <p class="win-title">당첨번호</p>
+        <p class="win-title">금주 당첨번호</p>
         <div class="win-number-container">
           <span class="win-number win-number--one">{{ thisWeekLotto[0] }}</span>
           <span class="win-number win-number--two">{{ thisWeekLotto[1] }}</span>
@@ -26,9 +26,8 @@
           <label>게임 횟수</label>
           <input
             type="number"
-            :value="playGames"
-            @change="playGamesChange($event)"
-            min="1"
+            v-model="playGames"
+            @input="playGamesChange($event)"
           />
         </div>
       </div>
@@ -37,8 +36,10 @@
           <label>포함 번호</label>
           <input
             type="text"
-            :value="include"
+            v-model="include"
             @keyup.enter="includeFn($event)"
+            placeholder="Enter Number"
+            :disabled="disbleInclude"
           />
         </div>
         <div class="reserved-box">
@@ -46,6 +47,7 @@
             v-for="num in includeArray"
             v-bind:key="num"
             class="reserved-value"
+            @click="removeinclude(num)"
           >
             {{ num }}
           </div>
@@ -56,8 +58,9 @@
           <label>제외 번호</label>
           <input
             type="text"
-            :value="exclude"
+            v-model="exclude"
             @keyup.enter="excludeFn($event)"
+            placeholder="Enter Number"
           />
         </div>
         <div class="reserved-box">
@@ -65,6 +68,7 @@
             v-for="num in excludeArray"
             v-bind:key="num"
             class="reserved-value"
+            @click="removeExclude(num)"
           >
             {{ num }}
           </div>
@@ -95,6 +99,7 @@ export default {
     excludeArray: [],
     include: null,
     exclude: null,
+    disbleInclude: false,
   }),
   async created() {},
   async mounted() {
@@ -102,15 +107,26 @@ export default {
   },
   methods: {
     playGamesChange(event) {
-      if (event.target.value < 1) return;
-      this.playGames = Number(event.target.value);
+      if (event.target.value < 1) {
+        this.playGames = 1;
+      } else if (event.target.value > 5) {
+        this.playGames = 5;
+      } else {
+        this.playGames = Number(event.target.value);
+      }
     },
     includeFn(event) {
+      if (this.includeArray.length === 6) {
+        this.disbleInclude = true;
+        this.include = "Input Number Is Only 6";
+        return;
+      }
       this.include = event.target.value;
       if (
         this.include > 0 &&
         this.include < 46 &&
-        !this.includeArray.includes(Number(this.include))
+        !this.includeArray.includes(Number(this.include)) &&
+        !this.excludeArray.includes(Number(this.include))
       )
         this.includeArray.push(Number(this.include));
       this.includeArray.sort((a, b) => a - b);
@@ -121,11 +137,22 @@ export default {
       if (
         this.exclude > 0 &&
         this.exclude < 46 &&
-        !this.excludeArray.includes(Number(this.exclude))
+        !this.excludeArray.includes(Number(this.exclude)) &&
+        !this.includeArray.includes(Number(this.exclude))
       )
         this.excludeArray.push(Number(this.exclude));
       this.excludeArray.sort((a, b) => a - b);
       this.exclude = "";
+    },
+    removeExclude(num) {
+      this.excludeArray.splice(this.excludeArray.indexOf(num), 1);
+    },
+    removeinclude(num) {
+      if (this.includeArray.length === 6) {
+        this.disbleInclude = false;
+        this.include = "";
+      }
+      this.includeArray.splice(this.includeArray.indexOf(num), 1);
     },
     async getLottos() {
       const result = await makeLotto(
@@ -140,7 +167,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 body {
   display: flex;
   justify-content: center;
@@ -209,16 +236,29 @@ main {
   flex-direction: column;
 }
 .input-box {
+  display: flex;
+  align-items: center;
   margin: 1em 0;
+  label {
+    margin-right: 1em;
+    font-weight: 500;
+  }
+  input {
+    border: 1px solid rgb(9, 254, 107);
+    text-decoration: none;
+    outline: none;
+    border-radius: 0.3em;
+    padding: 0.3em;
+  }
 }
 label {
   margin-right: 1em;
   font-weight: 500;
 }
 input {
+  border: none;
   text-decoration: none;
   outline: none;
-  border: none;
   border-radius: 0.3em;
   padding: 0.3em;
 }
@@ -230,14 +270,23 @@ input {
   display: inline-block;
   cursor: pointer;
   margin: 0 0.2em;
+  background-color: rgba(142, 149, 152, 0.3);
+  padding: 5px;
 }
 .reserved-value--game-times {
   display: inline;
   margin: 0;
   cursor: initial;
 }
+.submit-container {
+  position: absolute;
+  bottom: 5%;
+  width: 100%;
+  left: 0;
+}
 .submit-input {
   padding: 0.4em 1.6em;
   font-size: 1.1em;
+  cursor: pointer;
 }
 </style>

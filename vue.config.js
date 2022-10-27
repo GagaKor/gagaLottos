@@ -5,10 +5,17 @@ module.exports = defineConfig({
   lintOnSave: false,
   pluginOptions: {
     electronBuilder: {
+      externals: ["puppeteer-core", "electron"],
+      nodeModulesPath: ["./node_modules", "../../node_modules"],
+      nsis: {
+        createDesktopShortcut: "always",
+      },
       builderOptions: {
-        // productName: "",
-        // artifactName: "buddycoin-desktop-Setup-${version}.${ext}",
-        // icon: "./public/images/logo.png",
+        // asar: true,
+        // asarUnpack: "node_modules/puppeteer/.local-chromium/**/*",
+        productName: "GagaLottos",
+        artifactName: "GagaLottos-desktop-Setup-${version}.${ext}",
+        icon: "./public/images/logo.png",
         // options placed here will be merged with default configuration and passed to electron-builder
       },
       webPreferences: {

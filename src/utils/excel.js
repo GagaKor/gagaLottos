@@ -1,10 +1,15 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import path from "path";
 import fs from "fs";
 
-export const download = async () => {
+export const downloadExcel = async () => {
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless: true,
+      ignoreDefaultArgs: ["--enable-automation"],
+      executablePath:
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    });
     const page = await browser.newPage();
 
     await page.goto("https://dhlottery.co.kr/gameResult.do?method=byWin", {
@@ -15,11 +20,15 @@ export const download = async () => {
     await page.click(optionSelect, { delay: 10 });
     await page.keyboard.press("End");
     await page.keyboard.press("Enter");
-
-    await page._client.send("Page.setDownloadBehavior", {
+    const client = await page.target().createCDPSession();
+    await client.send("Page.setDownloadBehavior", {
       behavior: "allow",
       downloadPath: path.resolve("/", "lotto"),
     });
+    // await page._client.send("Page.setDownloadBehavior", {
+    //   behavior: "allow",
+    //   downloadPath: path.resolve("/", "lotto"),
+    // });
 
     const downBtn = "#exelBtn";
     await page.click(downBtn, { delay: 10 });
@@ -28,7 +37,6 @@ export const download = async () => {
     try {
       const interval = setInterval(() => {
         fs.readdir("C://lotto", async (err, files) => {
-          console.log(files.includes("excel.xls"));
           if (files.includes("excel.xls")) {
             clearInterval(interval);
           } else {

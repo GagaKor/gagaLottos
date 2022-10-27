@@ -12,7 +12,7 @@ export default createStore({
       return state.lottos;
     },
     getLastLottos(state) {
-      return state.lottos;
+      return state.lastLottos;
     },
     getResult(state) {
       return state.result;

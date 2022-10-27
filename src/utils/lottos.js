@@ -2,6 +2,10 @@ import * as XLSX from "xlsx";
 import fs from "fs";
 import store from "@/store";
 
+const paserProxy = (proxy) => {
+  return JSON.parse(JSON.stringify(proxy));
+};
+
 export const getThisWeekLotto = async () => {
   const data = fs.readFileSync("C:/lotto/excel.xls");
   const workbook = XLSX.read(data);
@@ -36,15 +40,17 @@ export const getThisWeekLotto = async () => {
   return thisWeekLotto;
 };
 export const makeLotto = async (playCount, include, exclude) => {
+  include = paserProxy(include);
+  exclude = paserProxy(exclude);
   // const data = fs.readFileSync("C:/lotto/excel.xls");
   // const workbook = XLSX.read(data);
   // const sheet = workbook.SheetNames;
   // const list = workbook.Sheets[sheet[1]];
   // const last = list["!ref"].slice(list["!ref"].indexOf("T") + 1);
   //엑셀에서 당첨번호 컬럼별 데이터 분리
-  const lastLotto = store.getters.getLastLottos;
+  const lastLotto = paserProxy(store.getters.getLastLottos);
 
-  const beforeLottos = store.getters.getLottos;
+  const beforeLottos = paserProxy(store.getters.getLottos);
 
   if (include && include.length > 5) throw new Error("Over 5 number");
 
