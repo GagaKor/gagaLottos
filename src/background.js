@@ -87,6 +87,12 @@ if (isDevelopment) {
 }
 
 //updater
+autoUpdater.setFeedURL({
+  provider: "github",
+  repo: "gagaLottos",
+  owner: "GagaKor",
+  token: "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",
+});
 
 autoUpdater.on("error", function (error) {
   console.log(error);
