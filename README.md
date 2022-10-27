@@ -1,6 +1,6 @@
 # gagalottos
 
-> An electron-vue project
+> An electron-vue project make lotto numbers
 
 #### Build Setup
 
