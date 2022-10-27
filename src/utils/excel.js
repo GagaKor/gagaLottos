@@ -4,6 +4,9 @@ import fs from "fs";
 
 export const downloadExcel = async () => {
   try {
+    if (!fs.existsSync("C://lotto")) {
+      fs.mkdirSync("C://lotto");
+    }
     const browser = await puppeteer.launch({
       headless: true,
       ignoreDefaultArgs: ["--enable-automation"],
@@ -37,7 +40,7 @@ export const downloadExcel = async () => {
     try {
       const interval = setInterval(() => {
         fs.readdir("C://lotto", async (err, files) => {
-          if (files.includes("excel.xls")) {
+          if (files && files.includes("excel.xls")) {
             clearInterval(interval);
           } else {
             timeout = 1000;

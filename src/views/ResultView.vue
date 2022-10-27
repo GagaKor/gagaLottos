@@ -2,7 +2,7 @@
   <form class="main-form">
     <section class="win-section">
       <div class="win-section-container">
-        <p class="win-title">추천번호</p>
+        <p class="win-title">Recommended Number</p>
         <div
           class="win-number-container"
           v-for="(arr, idx) in result"
@@ -20,12 +20,7 @@
     </section>
   </form>
   <div class="submit-container">
-    <input
-      class="submit-input"
-      type="submit"
-      value="처음으로"
-      @click="goBack()"
-    />
+    <input class="submit-input" type="submit" value="Home" @click="goBack()" />
   </div>
 </template>
 
@@ -88,7 +83,7 @@ main {
 }
 .win-title {
   font-weight: bold;
-  font-size: 1.4em;
+  font-size: 3em;
   margin-bottom: 0.6em;
   color: #5b6860;
 }
@@ -165,6 +160,10 @@ input {
   padding: 0.4em 1.6em;
   font-size: 1.1em;
   cursor: pointer;
+  background-color: #c6c6c6;
+  font-family: "Shalimar", "Franklin Gothic Medium", "Courier New", Courier,
+    monospace;
+  font-weight: bold;
 }
 .submit-container {
   position: absolute;

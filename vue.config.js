@@ -11,7 +11,8 @@ module.exports = defineConfig({
         createDesktopShortcut: "always",
       },
       builderOptions: {
-        // asar: true,
+        publish: ["github"],
+        asar: false,
         // asarUnpack: "node_modules/puppeteer/.local-chromium/**/*",
         productName: "GagaLottos",
         artifactName: "GagaLottos-desktop-Setup-${version}.${ext}",

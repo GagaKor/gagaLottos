@@ -2,7 +2,7 @@
   <form class="main-form">
     <section class="win-section">
       <div class="win-section-container">
-        <p class="win-title">금주 당첨번호</p>
+        <p class="win-title">This week's lotto</p>
         <div class="win-number-container">
           <span class="win-number win-number--one">{{ thisWeekLotto[0] }}</span>
           <span class="win-number win-number--two">{{ thisWeekLotto[1] }}</span>
@@ -23,7 +23,7 @@
     <section class="form-section">
       <div class="input-container input-container--gameTimes">
         <div class="input-box">
-          <label>게임 횟수</label>
+          <label>Number of games</label>
           <input
             type="number"
             v-model="playGames"
@@ -33,7 +33,7 @@
       </div>
       <div class="input-container">
         <div class="input-box">
-          <label>포함 번호</label>
+          <label>Included Number</label>
           <input
             type="text"
             v-model="include"
@@ -55,7 +55,7 @@
       </div>
       <div class="input-container">
         <div class="input-box">
-          <label>제외 번호</label>
+          <label>Exclusion number</label>
           <input
             type="text"
             v-model="exclude"
@@ -81,7 +81,7 @@
       class="submit-input"
       type="submit"
       @click="getLottos"
-      value="보내기"
+      value="Receive"
     />
   </div>
 </template>
@@ -168,6 +168,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import url("https://fonts.googleapis.com/css2?family=Roboto&family=Shalimar&display=swap");
+
 body {
   display: flex;
   justify-content: center;
@@ -204,9 +206,11 @@ main {
 }
 .win-title {
   font-weight: bold;
-  font-size: 1.4em;
+  font-size: 3em;
   margin-bottom: 0.6em;
   color: #5b6860;
+  font-family: "Shalimar", "Franklin Gothic Medium", "Courier New", Courier,
+    monospace;
 }
 .win-number-container {
   display: flex;
@@ -236,6 +240,8 @@ main {
   flex-direction: column;
 }
 .input-box {
+  font-family: "Roboto", sans-serif;
+
   display: flex;
   align-items: center;
   margin: 1em 0;
@@ -288,5 +294,9 @@ input {
   padding: 0.4em 1.6em;
   font-size: 1.1em;
   cursor: pointer;
+  background-color: #c6c6c6;
+  font-family: "Shalimar", "Franklin Gothic Medium", "Courier New", Courier,
+    monospace;
+  font-weight: bold;
 }
 </style>

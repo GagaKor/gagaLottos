@@ -4,7 +4,7 @@ import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import { remove } from "./utils/excel";
-
+import { autoUpdater } from "electron-updater";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Scheme must be registered before the app is ready
@@ -16,7 +16,8 @@ async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 800,
-    height: 550,
+    height: 600,
+    autoHideMenuBar: true,
     webPreferences: {
       webSecurity: false,
       worldSafeExecuteJavaScript: true, // required for Electron 12+
@@ -25,7 +26,6 @@ async function createWindow() {
       enableRemoteModule: true,
     },
   });
-
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
@@ -83,3 +83,15 @@ if (isDevelopment) {
     });
   }
 }
+
+//updater
+autoUpdater.setFeedURL({
+  provider: "github",
+  repo: "gagaLottos",
+  owner: "GagaKor",
+  private: true,
+  token: "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",
+});
+autoUpdater.on("update-downloaded", () => {
+  autoUpdater.quitAndInstall();
+});
