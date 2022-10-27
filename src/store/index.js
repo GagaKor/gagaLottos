@@ -3,11 +3,16 @@ import { createStore } from "vuex";
 // state, getters, mutations, actions, modules
 export default createStore({
   state: {
+    appVersion: "",
     lottos: [],
     lastLottos: [],
     result: [],
   },
   getters: {
+    getAppVersion(state) {
+      return state.appVersion;
+    },
+
     getLottos(state) {
       return state.lottos;
     },
@@ -19,6 +24,10 @@ export default createStore({
     },
   },
   mutations: {
+    setAppVersion(state, value) {
+      state.appVersion = value;
+    },
+
     setLottos(state, value) {
       state.lottos = value;
     },

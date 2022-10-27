@@ -6,7 +6,7 @@ import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import { remove } from "./utils/excel";
 import { autoUpdater } from "electron-updater";
 const isDevelopment = process.env.NODE_ENV !== "production";
-
+console.log(process.env.NODE_ENV);
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: false /*standard: true*/ } },
@@ -17,7 +17,7 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
-    autoHideMenuBar: true,
+    autoHideMenuBar: process.env.NODE_ENV === "production" ? true : false,
     webPreferences: {
       webSecurity: false,
       worldSafeExecuteJavaScript: true, // required for Electron 12+
@@ -67,6 +67,8 @@ app.on("ready", async () => {
   }
 
   createWindow();
+
+  await autoUpdater.checkForUpdates();
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -85,13 +87,26 @@ if (isDevelopment) {
 }
 
 //updater
-autoUpdater.setFeedURL({
-  provider: "github",
-  repo: "gagaLottos",
-  owner: "GagaKor",
-  private: true,
-  token: "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",
+
+autoUpdater.on("error", function (error) {
+  console.log(error);
 });
+
+// 업데이트 체크
+autoUpdater.on("checking-for-update", async () => {
+  console.log("Checking-for-update");
+});
+
+// 업데이트할 내용이 있을 때
+autoUpdater.on("update-available", async () => {
+  console.log("A new update is available");
+});
+
+// 업데이트할 내용이 없을 때
+autoUpdater.on("update-not-available", async () => {
+  console.log("update-not-available");
+});
+
 autoUpdater.on("update-downloaded", () => {
   autoUpdater.quitAndInstall();
 });

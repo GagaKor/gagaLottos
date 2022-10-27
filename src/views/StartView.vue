@@ -10,13 +10,17 @@
 <script>
 import { downloadExcel } from "../utils/excel";
 import fs from "fs";
+import store from "@/store";
 
 export default {
   data: () => ({
     loading: {},
     windowHeight: 0,
+    appVersion: "",
   }),
-  created() {},
+  created() {
+    this.appVersion = store.getters.appVersion;
+  },
 
   methods: {
     async startBtn() {

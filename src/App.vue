@@ -3,16 +3,13 @@
 </template>
 <script>
 import electron from "electron";
+import store from "./store";
 
 const { app } = electron.remote;
-
 export default {
   name: "App",
-  data: () => ({
-    appVersion: "",
-  }),
   async created() {
-    this.appVersion = app.getVersion();
+    store.commit("setAppVersion", app.getVersion());
   },
   async mounted() {},
   methods: {},

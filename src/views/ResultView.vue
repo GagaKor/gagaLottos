@@ -86,6 +86,8 @@ main {
   font-size: 3em;
   margin-bottom: 0.6em;
   color: #5b6860;
+  font-family: "Shalimar", "Franklin Gothic Medium", "Courier New", Courier,
+    monospace;
 }
 .win-number-container {
   display: flex;
