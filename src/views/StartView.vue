@@ -12,7 +12,6 @@
 import { downloadExcel } from "../utils/excel";
 import fs from "fs";
 import store from "@/store";
-import { ipcRenderer } from "electron";
 
 export default {
   data: () => ({
@@ -22,8 +21,6 @@ export default {
   }),
   created() {
     this.appVersion = store.getters.getAppVersion;
-    this.checkForUpdate();
-    this.showLoading("checkUpdate");
   },
 
   methods: {
@@ -58,17 +55,6 @@ export default {
         this.loading[key].hide();
         this.loading[key] = null;
       }
-    },
-    checkForUpdate() {
-      let setTime = setInterval(() => {
-        ipcRenderer.send("UPDATE_MSG");
-        ipcRenderer.on("checkResult", (event, data) => {
-          if (data) {
-            this.hideLoading("checkUpdate");
-            clearInterval(setTime);
-          }
-        });
-      }, 1000 * 5);
     },
   },
 };
