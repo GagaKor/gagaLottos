@@ -7,6 +7,8 @@ export default createStore({
     lottos: [],
     lastLottos: [],
     result: [],
+    includeArr: [],
+    excludeArr: [],
   },
   getters: {
     getAppVersion(state) {
@@ -22,6 +24,12 @@ export default createStore({
     getResult(state) {
       return state.result;
     },
+    getIncludeArr(state) {
+      return state.includeArr;
+    },
+    getExcludeArr(state) {
+      return state.excludeArr;
+    },
   },
   mutations: {
     setAppVersion(state, value) {
@@ -35,6 +43,12 @@ export default createStore({
     },
     setResult(state, value) {
       state.result = value;
+    },
+    setIncludeArr(state, value) {
+      state.includeArr = value;
+    },
+    setExcludeArr(state, value) {
+      state.excludeArr = value;
     },
   },
 });

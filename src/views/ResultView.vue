@@ -6,15 +6,22 @@
         <div
           class="win-number-container"
           v-for="(arr, idx) in result"
-          v-bind:key="arr"
+          v-bind:key="idx"
         >
-          <span class="number-span">{{ idx + 1 }} &#10146;</span>
+          <span class="number-span"
+            >{{ idx + 1 }}&nbsp;&nbsp;
+            <font-awesome-icon icon="forward" class="forward" />
+          </span>
+
           <span class="win-number win-number--one">{{ arr[0] }}</span>
           <span class="win-number win-number--two">{{ arr[1] }}</span>
           <span class="win-number win-number--three">{{ arr[2] }}</span>
           <span class="win-number win-number--four">{{ arr[3] }}</span>
           <span class="win-number win-number--five">{{ arr[4] }}</span>
           <span class="win-number win-number--six">{{ arr[5] }}</span>
+          <span class="refresh-btn" @click="refreshLottos(idx)">
+            <font-awesome-icon icon="rotate" />
+          </span>
         </div>
       </div>
     </section>
@@ -26,12 +33,17 @@
 
 <script>
 import store from "@/store";
+import { makeLotto } from "../utils/lottos";
 export default {
   data: () => ({
     result: [],
+    includeArray: [],
+    excludeArray: [],
   }),
   created() {
     this.result = this.paserProxy(store.getters.getResult);
+    this.includeArray = store.getters.getIncludeArr;
+    this.excludeArray = store.getters.getExcludeArr;
   },
   mounted() {},
 
@@ -40,7 +52,18 @@ export default {
       this.$router.push("/");
     },
     paserProxy(proxy) {
+      if (!proxy) return [];
       return JSON.parse(JSON.stringify(proxy));
+    },
+    async refreshLottos(idx) {
+      const lotto = await makeLotto(
+        1,
+        this.paserProxy(this.includeArray),
+        this.paserProxy(this.excludeArray)
+      );
+      const beforeLottos = this.paserProxy(this.result);
+      beforeLottos.splice(idx, 1, lotto[0]);
+      this.result = beforeLottos;
     },
   },
 };
@@ -118,6 +141,19 @@ main {
   font-size: 1.2em;
   height: 48px;
   margin-bottom: 15px;
+}
+.refresh-btn {
+  display: flex;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 0.4em;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.2em;
+  height: 48px;
+  margin-bottom: 15px;
+  cursor: pointer;
 }
 .form-section {
   display: flex;

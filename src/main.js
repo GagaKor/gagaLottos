@@ -6,4 +6,16 @@ import "vue-loading-overlay/dist/vue-loading.css";
 
 import store from "./store/index";
 
-createApp(App).use(router).use(Loading).use(store).mount("#app");
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faRotate, faForward } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+library.add(faRotate, faForward);
+
+const app = createApp(App);
+
+app.component("font-awesome-icon", FontAwesomeIcon);
+app.use(router);
+app.use(Loading);
+app.use(store);
+app.mount("#app");

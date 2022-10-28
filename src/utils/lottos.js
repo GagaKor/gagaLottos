@@ -40,8 +40,6 @@ export const getThisWeekLotto = async () => {
   return thisWeekLotto;
 };
 export const makeLotto = async (playCount, include, exclude) => {
-  include = paserProxy(include);
-  exclude = paserProxy(exclude);
   // const data = fs.readFileSync("C:/lotto/excel.xls");
   // const workbook = XLSX.read(data);
   // const sheet = workbook.SheetNames;

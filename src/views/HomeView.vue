@@ -154,11 +154,17 @@ export default {
       }
       this.includeArray.splice(this.includeArray.indexOf(num), 1);
     },
+    paserProxy(proxy) {
+      return JSON.parse(JSON.stringify(proxy));
+    },
     async getLottos() {
+      store.commit("setIncludeArr", this.includeArray);
+      store.commit("setExcludeArr", this.excludeArray);
+
       const result = await makeLotto(
         this.playGames,
-        this.includeArray,
-        this.excludeArray
+        this.paserProxy(this.includeArray),
+        this.paserProxy(this.excludeArray)
       );
       store.commit("setResult", result);
 
