@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import { remove } from "./utils/excel";
@@ -67,9 +67,6 @@ app.on("ready", async () => {
   }
 
   createWindow();
-
-  autoUpdater.forceDevUpdateConfig = true;
-  await autoUpdater.checkForUpdates();
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -88,6 +85,19 @@ if (isDevelopment) {
 }
 
 //updater
+
+//dev모드일 때 업데이트 허용
+// autoUpdater.forceDevUpdateConfig = true;
+let check = false;
+
+ipcMain.on("check_update", async () => {
+  await autoUpdater.checkForUpdates();
+});
+
+ipcMain.on("UPDATE_MSG", (event) => {
+  event.reply("checkResult", check);
+});
+
 autoUpdater.setFeedURL({
   provider: "github",
   repo: "gagaLottos",
@@ -110,6 +120,7 @@ autoUpdater.on("update-available", async () => {
 
 // 업데이트할 내용이 없을 때
 autoUpdater.on("update-not-available", async () => {
+  check = true;
   console.log("update-not-available");
 });
 

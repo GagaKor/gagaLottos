@@ -27,7 +27,6 @@ export default createStore({
     setAppVersion(state, value) {
       state.appVersion = value;
     },
-
     setLottos(state, value) {
       state.lottos = value;
     },

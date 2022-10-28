@@ -5,12 +5,14 @@
       <button class="startBtn" @click="startBtn()">Start</button>
     </div>
   </div>
+  <div class="info">Made by Gaga Ver.{{ appVersion }}</div>
 </template>
 
 <script>
 import { downloadExcel } from "../utils/excel";
 import fs from "fs";
 import store from "@/store";
+import { ipcRenderer } from "electron";
 
 export default {
   data: () => ({
@@ -19,7 +21,9 @@ export default {
     appVersion: "",
   }),
   created() {
-    this.appVersion = store.getters.appVersion;
+    this.appVersion = store.getters.getAppVersion;
+    this.checkForUpdate();
+    this.showLoading("checkUpdate");
   },
 
   methods: {
@@ -55,6 +59,17 @@ export default {
         this.loading[key] = null;
       }
     },
+    checkForUpdate() {
+      let setTime = setInterval(() => {
+        ipcRenderer.send("UPDATE_MSG");
+        ipcRenderer.on("checkResult", (event, data) => {
+          if (data) {
+            this.hideLoading("checkUpdate");
+            clearInterval(setTime);
+          }
+        });
+      }, 1000 * 5);
+    },
   },
 };
 </script>
@@ -87,5 +102,12 @@ export default {
     monospace;
   font-size: 1.2em;
   cursor: pointer;
+}
+.info {
+  font-size: 10pt;
+  font-weight: bold;
+  position: absolute;
+  bottom: 0;
+  right: 10px;
 }
 </style>

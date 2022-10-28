@@ -2,14 +2,16 @@
   <router-view />
 </template>
 <script>
-import electron from "electron";
+import electron, { ipcRenderer } from "electron";
 import store from "./store";
 
 const { app } = electron.remote;
 export default {
   name: "App",
   async created() {
+    console.log(app.getVersion());
     store.commit("setAppVersion", app.getVersion());
+    ipcRenderer.send("check_update");
   },
   async mounted() {},
   methods: {},
