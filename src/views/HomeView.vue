@@ -246,6 +246,7 @@ main {
   align-items: center;
   margin: 1em 0;
   label {
+    width: 160px;
     margin-right: 1em;
     font-weight: 500;
   }
@@ -286,7 +287,7 @@ input {
 }
 .submit-container {
   position: absolute;
-  bottom: 5%;
+  bottom: 3%;
   width: 100%;
   left: 0;
 }

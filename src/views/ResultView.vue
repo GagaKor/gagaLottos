@@ -169,7 +169,7 @@ input {
 }
 .submit-container {
   position: absolute;
-  bottom: 5%;
+  bottom: 3%;
   width: 100%;
   left: 0;
 }
