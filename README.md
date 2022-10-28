@@ -20,7 +20,7 @@ yarn build:prod
 ---
 ![image](https://user-images.githubusercontent.com/80230648/198460539-5daae95b-77a8-4f66-89fc-ce465623e2bf.png)
 ---
-![image](https://user-images.githubusercontent.com/80230648/198460668-d9d7124c-d81d-4983-b36c-d297ab86e7e4.png)
+![image](https://user-images.githubusercontent.com/80230648/198517623-b0120fe4-d182-4ebe-b204-3ea37a952a08.png)
 ---
 
 This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
