@@ -1,4 +1,8 @@
 <template>
+  <div class="homeBtnWrap">
+    <font-awesome-icon icon="house" class="house" @click="goHome()" />
+  </div>
+
   <form class="main-form">
     <section class="win-section">
       <div class="win-section-container">
@@ -29,6 +33,12 @@
             v-model="playGames"
             @input="playGamesChange($event)"
           />
+        </div>
+      </div>
+      <div class="input-container input-container--gameTimes">
+        <div class="input-box">
+          <label>Deviation</label>
+          <input type="number" v-model="deviation" @input="changeDev($event)" />
         </div>
       </div>
       <div class="input-container">
@@ -100,8 +110,14 @@ export default {
     include: null,
     exclude: null,
     disbleInclude: false,
+    deviation: 0,
   }),
-  async created() {},
+  async created() {
+    this.playGames = store.getters.getPlayGame;
+    this.deviation = store.getters.getDeviation;
+    this.includeArray = store.getters.getIncludeArr;
+    this.excludeArray = store.getters.getExcludeArr;
+  },
   async mounted() {
     this.thisWeekLotto = await getThisWeekLotto();
   },
@@ -154,21 +170,36 @@ export default {
       }
       this.includeArray.splice(this.includeArray.indexOf(num), 1);
     },
+    changeDev(event) {
+      if (Number(event.target.value > 200) || Number(event.target.value < 0)) {
+        this.deviation = 0;
+        return;
+      }
+      this.deviation = Number(event.target.value);
+    },
     paserProxy(proxy) {
       return JSON.parse(JSON.stringify(proxy));
     },
     async getLottos() {
+      if (!this.deviation) this.deviation = 0;
+
       store.commit("setIncludeArr", this.includeArray);
       store.commit("setExcludeArr", this.excludeArray);
-
+      store.commit("setDeviation", this.deviation);
+      store.commit("setPlayGame", this.playGames);
       const result = await makeLotto(
         this.playGames,
         this.paserProxy(this.includeArray),
-        this.paserProxy(this.excludeArray)
+        this.paserProxy(this.excludeArray),
+        this.deviation
       );
       store.commit("setResult", result);
 
       this.$router.push("/result");
+    },
+    goHome() {
+      store.commit("reSet");
+      this.$router.push("/");
     },
   },
 };
@@ -193,6 +224,15 @@ main {
   background-color: #dfd3c3;
   border-radius: 30px;
 }
+.homeBtnWrap {
+  position: absolute;
+  margin: 10px;
+}
+.house {
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .main-form {
   height: 100%;
   display: flex;

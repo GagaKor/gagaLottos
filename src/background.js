@@ -15,8 +15,8 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1080,
+    height: 880,
     autoHideMenuBar: process.env.NODE_ENV === "production" ? true : false,
     webPreferences: {
       webSecurity: false,

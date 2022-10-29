@@ -1,4 +1,7 @@
 <template>
+  <div class="homeBtnWrap">
+    <font-awesome-icon icon="house" class="house" @click="goHome()" />
+  </div>
   <form class="main-form">
     <section class="win-section">
       <div class="win-section-container">
@@ -27,7 +30,7 @@
     </section>
   </form>
   <div class="submit-container">
-    <input class="submit-input" type="submit" value="Home" @click="goBack()" />
+    <input class="submit-input" type="submit" value="Back" @click="goBack()" />
   </div>
 </template>
 
@@ -39,17 +42,19 @@ export default {
     result: [],
     includeArray: [],
     excludeArray: [],
+    deviation: 0,
   }),
   created() {
     this.result = this.paserProxy(store.getters.getResult);
     this.includeArray = store.getters.getIncludeArr;
     this.excludeArray = store.getters.getExcludeArr;
+    this.deviation = store.getters.setDeviation;
   },
   mounted() {},
 
   methods: {
     goBack() {
-      this.$router.push("/");
+      this.$router.push("/home");
     },
     paserProxy(proxy) {
       if (!proxy) return [];
@@ -59,17 +64,31 @@ export default {
       const lotto = await makeLotto(
         1,
         this.paserProxy(this.includeArray),
-        this.paserProxy(this.excludeArray)
+        this.paserProxy(this.excludeArray),
+        this.deviation
       );
       const beforeLottos = this.paserProxy(this.result);
       beforeLottos.splice(idx, 1, lotto[0]);
       this.result = beforeLottos;
     },
+    goHome() {
+      store.commit("reSet");
+      this.$router.push("/");
+    },
   },
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.homeBtnWrap {
+  position: absolute;
+  margin: 10px;
+}
+.house {
+  font-size: 20px;
+  cursor: pointer;
+}
+
 body {
   display: flex;
   justify-content: center;

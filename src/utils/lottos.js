@@ -39,7 +39,7 @@ export const getThisWeekLotto = async () => {
   store.commit("setLastLottos", thisWeekLotto);
   return thisWeekLotto;
 };
-export const makeLotto = async (playCount, include, exclude) => {
+export const makeLotto = async (playCount, include, exclude, deviation) => {
   // const data = fs.readFileSync("C:/lotto/excel.xls");
   // const workbook = XLSX.read(data);
   // const sheet = workbook.SheetNames;
@@ -50,9 +50,23 @@ export const makeLotto = async (playCount, include, exclude) => {
 
   const beforeLottos = paserProxy(store.getters.getLottos);
 
-  if (include && include.length > 5) throw new Error("Over 5 number");
-
+  if (include && include.length > 6) throw new Error("Over 6 number");
   const result = [];
+  if (include.length === 6) {
+    result.push(include);
+    return result;
+  }
+  if (include && include.length > 1) {
+    let check = 0;
+    include.sort((a, b) => b - a);
+    for (let i = 0; i < include.length - 1; i++) {
+      check += include[i] - include[i + 1];
+    }
+    console.log(check, deviation);
+    if (check <= deviation) {
+      throw new Error("Check the deviations or number of inclusions");
+    }
+  }
   for (let i = 0; i < playCount; i++) {
     let flag = true;
     let game = [];
@@ -86,7 +100,7 @@ export const makeLotto = async (playCount, include, exclude) => {
     for (let g of game) {
       max += g;
     }
-    if (max < 106 || max > 170 || min < 11) {
+    if (max < 106 || max > 170 || min <= deviation) {
       i--;
       continue;
     }

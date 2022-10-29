@@ -7,10 +7,14 @@ import "vue-loading-overlay/dist/vue-loading.css";
 import store from "./store/index";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faRotate, faForward } from "@fortawesome/free-solid-svg-icons";
+import {
+  faRotate,
+  faForward,
+  faHouse,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faRotate, faForward);
+library.add(faRotate, faForward, faHouse);
 
 const app = createApp(App);
 
