@@ -48,7 +48,7 @@ export default {
     this.result = this.paserProxy(store.getters.getResult);
     this.includeArray = store.getters.getIncludeArr;
     this.excludeArray = store.getters.getExcludeArr;
-    this.deviation = store.getters.setDeviation;
+    this.deviation = store.getters.getDeviation;
   },
   mounted() {},
 

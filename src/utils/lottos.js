@@ -56,37 +56,44 @@ export const makeLotto = async (playCount, include, exclude, deviation) => {
     result.push(include);
     return result;
   }
-  if (include && include.length > 1) {
-    let check = 0;
-    include.sort((a, b) => b - a);
-    for (let i = 0; i < include.length - 1; i++) {
-      check += include[i] - include[i + 1];
-    }
-    console.log(check, deviation);
-    if (check <= deviation) {
-      throw new Error("Check the deviations or number of inclusions");
-    }
-  }
+  // if (include && include.length > 1) {
+  //   let check = 0;
+  //   include.sort((a, b) => b - a);
+  //   for (let i = 0; i < include.length - 1; i++) {
+  //     check += include[i] - include[i + 1];
+  //   }
+  //   console.log(check, deviation);
+  //   if (check <= deviation) {
+  //     throw new Error("Check the deviations or number of inclusions");
+  //   }
+  // }
   for (let i = 0; i < playCount; i++) {
     let flag = true;
     let game = [];
     let anyNum = Math.floor(Math.random() * 6);
-    while (game.length < 1) {
-      if (exclude && exclude.indexOf(lastLotto[anyNum]) === -1) {
-        game.push(lastLotto[anyNum]);
+    if (include && include.length > 0) {
+      game = [...include];
+    }
+    const gameLength = game.length;
+
+    //전 회차 번호 1개 무조건 포함
+    while (game.length < gameLength + 1) {
+      if (exclude && !exclude.includes(lastLotto[anyNum])) {
+        //포함 수에 전 회차 번호가 있으면 추가하지 않음
+        if (game.includes(lastLotto[anyNum])) break;
+        else game.push(lastLotto[anyNum]);
       } else {
         anyNum = Math.floor(Math.random() * 6);
       }
     }
-    if (include && include.length > 0) {
-      game = [game[0], ...include];
-    }
+
+    //random 번호
     while (game.length < 6) {
       const num = Math.floor(Math.random() * 44) + 1;
       if (
-        game.indexOf(num) === -1 &&
-        (!exclude || exclude.indexOf(num) === -1) &&
-        lastLotto.indexOf(num) === -1
+        !game.includes(num) &&
+        (!exclude || !exclude.includes(num)) &&
+        !lastLotto.includes(num)
       ) {
         game.push(num);
       }
@@ -94,12 +101,14 @@ export const makeLotto = async (playCount, include, exclude, deviation) => {
     game.sort((a, b) => b - a);
     let min = 0;
     let max = 0;
+
     for (let i = 0; i < game.length - 1; i++) {
       min += game[i] - game[i + 1];
     }
     for (let g of game) {
       max += g;
     }
+    //범위 조정
     if (max < 106 || max > 170 || min <= deviation) {
       i--;
       continue;
